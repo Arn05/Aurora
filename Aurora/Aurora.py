@@ -11,7 +11,8 @@ import requests
 import mysql.connector as sqlcon
 from urllib.request import urlopen
 import google.generativeai as genai
-
+from IPython.display import Markdown
+import textwrap
 
 genai.configure(api_key='AIzaSyASZqZgHvFivk5xoXVN-p1cGGjOZ-_JMmw')
 model = genai.GenerativeModel('gemini-pro')
@@ -122,6 +123,9 @@ def limit_output_to_words(text, max_words):
     limited_output = ' '.join(selected_words)
     return limited_output
 
+def to_markdown(text):
+  text = text.replace('•', '  *')
+  return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
 
 #MYSQL-Connection:-
 con = sqlcon.connect(host='localhost', user='root', password='1234', database='pbl_project')
@@ -397,7 +401,7 @@ elif 'login' in query:
 
         else:
             response = model.generate_content(query)
-            
+            print(to_markdown(response.text))
             count=0
             for i in response:
                 if ' ' in response:
